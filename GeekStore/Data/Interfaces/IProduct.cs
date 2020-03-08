@@ -9,7 +9,7 @@ namespace GeekStore.Data.Interfaces
     public interface IProduct
     {
         IEnumerable<Product> Products { get; }
-         IEnumerable<Product> ProductsAdm { get; }
+        IEnumerable<Product> ProductsAdm { get; }
         IEnumerable<Product> ProductsAdv { get; }
 
         Product GetProductById(int id);

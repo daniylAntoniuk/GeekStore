@@ -20,6 +20,7 @@ namespace GeekStore.Data.Repositories
         {
             get
             {
+                
                 return _context.Products.Where(x => x.IsDisabled != true);
             }
         }
@@ -27,6 +28,7 @@ namespace GeekStore.Data.Repositories
         {
             get
             {
+
                 return _context.Products;
             }
         }

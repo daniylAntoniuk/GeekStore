@@ -382,16 +382,16 @@
                                         <div class="large-5 column">
                                             <div class="xzoom-container">
 
-                                                <img class="xzoom" id="xzoom-default" src="~/img/@Model.Product.Image" />
+                                                <img class="xzoom" id="xzoom-default" src="@Model.Product.Image" />
 
                                                 <div class="xzoom-thumbs">
-                                                    <a href="~/img/@Model.Product.Image"><img class="xzoom-gallery" style=" object-fit: contain;" width="80" height="80" src="~/img/@Model.Product.Image"></a>
+                                                    <a href="@Model.Product.Image"><img class="xzoom-gallery" style=" object-fit: contain;" width="80" height="80" src="@Model.Product.Image"></a>
                                                     @{
 
                                                         foreach (ProductImage el in Model.ProductImages)
                                                         {
 
-                                                            <a href="~/img/@el.ImgName"><img class="xzoom-gallery" style=" object-fit: contain;" width="80" height="80" src="~/img/@el.ImgName"></a>
+                                                            <a href="@el.ImgName"><img class="xzoom-gallery" style=" object-fit: contain;" width="80" height="80" src="@el.ImgName"></a>
                                                         }
                                                     }
 
@@ -505,7 +505,7 @@
                                                             }
                                                             else
                                                             {
-                                                                <a asp-controller="Product" asp-action="AddLike" asp-route-prodId="@Model.Product.Id" style="text-decoration: inherit;color:inherit; position: inherit; " >
+                                                                <a asp-controller="Product" asp-action="AddLike" asp-route-prodId="@Model.Product.Id" style="text-decoration: inherit;color:inherit; position: inherit; ">
                                                                     <i style="color:#0864e4;" class="far fa-thumbs-up fa-3x mr-2"></i>
                                                                 </a>
                                                             }
@@ -527,57 +527,57 @@
                                                 @*<script>
 
 
-                                                        like.onclick=function () {
+                                                            like.onclick=function () {
 
-                                                            if ($("#like").hasClass("far")) {
-                                                                if (!$("#dislike").hasClass("fas")) {
-                                                                    $("#like").addClass("fas");
-                                                                    $("#like").removeClass("far");
+                                                                if ($("#like").hasClass("far")) {
+                                                                    if (!$("#dislike").hasClass("fas")) {
+                                                                        $("#like").addClass("fas");
+                                                                        $("#like").removeClass("far");
 
 
+                                                                    }
+                                                                    else {
+                                                                        $("#dislike").addClass("far");
+                                                                        $("#dislike").removeClass("fas");
+                                                                        $("#like").addClass("fas");
+                                                                        $("#like").removeClass("far");
+                                                                    }
+                                                                         document.cookie += "like=true,productId=@Model.Product.Id";
                                                                 }
                                                                 else {
-                                                                    $("#dislike").addClass("far");
-                                                                    $("#dislike").removeClass("fas");
-                                                                    $("#like").addClass("fas");
-                                                                    $("#like").removeClass("far");
+                                                                     $("#like").addClass("far");
+                                                                    $("#like").removeClass("fas");
+                                                                    document.cookie += "like=";
                                                                 }
-                                                                     document.cookie += "like=true,productId=@Model.Product.Id";
                                                             }
-                                                            else {
-                                                                 $("#like").addClass("far");
-                                                                $("#like").removeClass("fas");
-                                                                document.cookie += "like=";
-                                                            }
-                                                        }
-                                                        function dislike() {
-                                                            if ($("#dislike").hasClass("far")) {
-                                                                if (!$("#like").hasClass("fas")) {
-                                                                    $("#dislike").addClass("fas");
-                                                                $("#dislike").removeClass("far");
-
-                                                                }
-                                                                else {
-                                                                    $("#like").addClass("far");
-                                                                $("#like").removeClass("fas");
-                                                                    $("#dislike").addClass("fas");
+                                                            function dislike() {
+                                                                if ($("#dislike").hasClass("far")) {
+                                                                    if (!$("#like").hasClass("fas")) {
+                                                                        $("#dislike").addClass("fas");
                                                                     $("#dislike").removeClass("far");
+
+                                                                    }
+                                                                    else {
+                                                                        $("#like").addClass("far");
+                                                                    $("#like").removeClass("fas");
+                                                                        $("#dislike").addClass("fas");
+                                                                        $("#dislike").removeClass("far");
+                                                                    }
+
+
                                                                 }
-
-
+                                                                else {
+                                                                     $("#dislike").addClass("far");
+                                                                    $("#dislike").removeClass("fas");
+                                                                }
                                                             }
-                                                            else {
-                                                                 $("#dislike").addClass("far");
-                                                                $("#dislike").removeClass("fas");
-                                                            }
-                                                        }
 
 
 
-                                                        let cookies = document.cookie;
+                                                            let cookies = document.cookie;
 
 
-                                                </script>*@
+                                                    </script>*@
                                             </div>
                                         </div>
 
@@ -617,53 +617,92 @@
                                     </script>
                                 </div>
                                 @model GeekStore.Data.ViewModels.OrderViewModel
-                                <div class="tab-pane fade show" id="order" role="tabpanel" aria-labelledby="order-tab">
+                            <div class="tab-pane fade show" id="order" role="tabpanel" aria-labelledby="order-tab">
+                                @{var res = await Component.InvokeAsync("User");
 
-                                    <form method="post" asp-controller="Product" class="mt-5" asp-action="SeeProduct">
 
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" asp-for="FirstName" placeholder="First Name *" value="" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" asp-for="LastName" placeholder="Last Name *" value="" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" asp-for="Phone" minlength="10" maxlength="13" class="form-control" placeholder="Your Phone *" value="" />
-                                                </div>
-                                                <input type="text" asp-for="ProductId" hidden value="@Model.Product.Id" />
-                                            </div>
-                                            <div class="col-md-6">
+                                    using (var writer = new System.IO.StringWriter())
+                                    {
+                                        res.WriteTo(writer, HtmlEncoder.Default);
+                                        var result = writer.ToString();
 
-                                                <div class="form-group">
-                                                    <input type="text" asp-for="Sity" minlength="3" maxlength="15" class="form-control" placeholder="Sity *" value="" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="flex-row">
-                                                        <img src="~/img/new_post.png" style="width:30px;height:30px; align-self:center; margin-right:3px;" />
-                                                        <input type="text" asp-for="PostDepartament" minlength="1" maxlength="4" class="form-control" placeholder="New Post departament *" value="" />
-                                                    </div>
-                                                </div>
-                                                <div class="flex-row">
-                                                    <div class="col">
-                                                        <span class="control-label">Quantity</span>
-                                                        <div class="cart-plus-minus">
-                                                            <input type="text" asp-for="Count" maxlength="2" class="cart-plus-minus-box" value="1">
+                                        if (result.Contains('1'))
+                                        {
+                                            <form method="post" asp-controller="Product" class="mt-5" asp-action="SeeProduct">
+
+                                                <div class="row">
+                                                    
+                                                    <div class="col-md-6">
+
+                                                        
+                                                        <div class="flex-row">
+                                                            <div class="col">
+                                                                <span class="control-label">Quantity</span>
+                                                                <div class="cart-plus-minus">
+                                                                                                    <input type="text" asp-for="ProductId" hidden value="@Model.Product.Id" />
+                                                                    <input type="text" asp-for="Count" maxlength="2" class="cart-plus-minus-box" value="1">
+                                                                </div>
+                                                            </div>
+                                                            <input type="submit" class="btnRegister" value="Make Order" />
                                                         </div>
+
                                                     </div>
-                                                    <input type="submit" class="btnRegister" value="Make Order" />
+
                                                 </div>
 
-                                            </div>
-
-                                        </div>
 
 
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" asp-controller="Product" class="mt-5" asp-action="SeeProduct">
 
-                                    </form>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" asp-for="FirstName" placeholder="First Name *" value="" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" asp-for="LastName" placeholder="Last Name *" value="" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="text" asp-for="Phone" minlength="10" maxlength="13" class="form-control" placeholder="Your Phone *" value="" />
+                                                        </div>
+                                                        <input type="text" asp-for="ProductId" hidden value="@Model.Product.Id" />
+                                                    </div>
+                                                    <div class="col-md-6">
 
-                                </div>
+                                                        <div class="form-group">
+                                                            <input type="text" asp-for="Sity" minlength="3" maxlength="15" class="form-control" placeholder="Sity *" value="" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="flex-row">
+                                                                <img src="~/img/new_post.png" style="width:30px;height:30px; align-self:center; margin-right:3px;" />
+                                                                <input type="text" asp-for="PostDepartament" minlength="1" maxlength="4" class="form-control" placeholder="New Post departament *" value="" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-row">
+                                                            <div class="col">
+                                                                <span class="control-label">Quantity</span>
+                                                                <div class="cart-plus-minus">
+                                                                    <input type="text" asp-for="Count" maxlength="2" class="cart-plus-minus-box" value="1">
+                                                                </div>
+                                                            </div>
+                                                            <input type="submit" class="btnRegister" value="Make Order" />
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+
+                                            </form>
+                                        }
+                                    }
+                                }
+                            </div>
                             </div>
                         </div>
                     </div>

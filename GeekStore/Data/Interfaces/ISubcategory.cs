@@ -9,5 +9,6 @@ namespace GeekStore.Data.Interfaces
     public interface ISubcategory
     {
         IEnumerable<Subcategory> Subcategories { get; }
+        List<Subcategory> GetSubcategoriesByCategoryId(int id);
     }
 }

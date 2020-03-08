@@ -32,7 +32,6 @@ C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\GeekStore.
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\GeekStore.pdb
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\GeekStore.csproj.CopyComplete
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Product\SeeProduct.g.cshtml.cs
-C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\GeekStore.csprojAssemblyReference.cache
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Product\CategoryProducts.g.cshtml.cs
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Home\AllDone.g.cshtml.cs
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Admin\Home.g.cshtml.cs
@@ -49,3 +48,5 @@ C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\View
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Components\User\Default.g.cshtml.cs
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Product\Search.g.cshtml.cs
 C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Components\Search\Default.g.cshtml.cs
+C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\GeekStore.csprojAssemblyReference.cache
+C:\Users\Dan\source\repos\GeekStore\GeekStore\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Components\UserPhoto\Default.g.cshtml.cs

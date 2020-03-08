@@ -25,11 +25,9 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+
                 <li class="nav-item active">
-                    <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="ListCars">Cars</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Home" asp-action="AllDone">News <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us <span class="sr-only">(current)</span></a>
                 </li>
 
             </ul>
@@ -90,11 +88,11 @@
                             </div>
                         </div>
 
-
+                        
                         <a asp-controller="Account" asp-action="Profile">
-                            <img src="~/img/no_img.png" style="border-radius:50%; height:40px; width:40px; margin:0px 5px 0px 5px " />
-
+                            <img src="@await Component.InvokeAsync("UserPhoto")" style="border-radius:50%; height:40px; width:40px; margin:0px 5px 0px 5px " />
                         </a>
+                        
                         <form asp-controller="Account" asp-action="Logout">
                             <button type="submit" class="btn btn-danger">
                                 Sign out

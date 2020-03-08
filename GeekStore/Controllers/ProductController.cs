@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GeekStore.Data.EFContext;
@@ -8,6 +9,7 @@ using GeekStore.Data.Tables;
 using GeekStore.Data.ViewModels;
 using GeekStore.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -24,7 +26,8 @@ namespace GeekStore.Controllers
         private readonly IComment _comment;
         private readonly ICategory _category;
         private readonly ICart _cart;
-        public ProductController(ISubcategory subcategory, IProduct product, IProductImages productImages, IComment comment, DBContext context, ICategory category, ICart cart)
+        private readonly IHostingEnvironment _environment;
+        public ProductController(IHostingEnvironment environment,ISubcategory subcategory, IProduct product, IProductImages productImages, IComment comment, DBContext context, ICategory category, ICart cart)
         {
             _product = product;
             _productImages = productImages;
@@ -33,6 +36,7 @@ namespace GeekStore.Controllers
             _category = category;
             _cart = cart;
             _subcategory = subcategory;
+            _environment = environment;
         }
         public IActionResult Index()
         {
@@ -59,6 +63,8 @@ namespace GeekStore.Controllers
         public IActionResult AddDislike(int prodId)
         {
             var info = HttpContext.Session.GetString("SessionUserData");
+            if (info != null)
+            {
 
             var res = JsonConvert.DeserializeObject<UserInfo>(info);
             _context.Dislikes.Add(new Dislike()
@@ -68,6 +74,8 @@ namespace GeekStore.Controllers
             });
             _context.SaveChanges();
             return RedirectToAction("SeeProduct", "Product", new { id = prodId });
+            }
+            return RedirectToAction("Login", "Account");
 
         }
         [HttpGet]
@@ -76,6 +84,13 @@ namespace GeekStore.Controllers
         {
             OrderViewModel model = new OrderViewModel();
             var info = HttpContext.Session.GetString("SessionUserData");
+            var product = _product.GetProductById(id);
+            product.Image = Path.Combine("/Image", product.Image);
+            var productImages = _productImages.GetImagesById(id);
+            foreach (var el in productImages)
+            {
+                el.ImgName = Path.Combine("/Image", el.ImgName);
+            }
             if (info != null)
             {
                 var res = JsonConvert.DeserializeObject<UserInfo>(info);
@@ -86,19 +101,14 @@ namespace GeekStore.Controllers
                     like = true;
                 }
                 if (_context.Dislikes.FirstOrDefault(x => x.ProductId == id && x.UserId == res.UserId) != null)
-                {
-                   
-                    
-
-                        dislike = true;
-                    
-
-
+                {                   
+                    dislike = true;
                 }
+                
                 model = new OrderViewModel()
                 {
-                    Product = _product.GetProductById(id),
-                    ProductImages = _productImages.GetImagesById(id),
+                    Product = product,
+                    ProductImages =productImages,
                     Comments = _comment.GetCommentsById(id),
                     Likes = _context.Likes.Where(x => x.ProductId == id).Count(),
                     Dislikes = _context.Dislikes.Where(x => x.ProductId == id).Count(),
@@ -110,8 +120,8 @@ namespace GeekStore.Controllers
             {
                 model = new OrderViewModel()
                 {
-                    Product = _product.GetProductById(id),
-                    ProductImages = _productImages.GetImagesById(id),
+                    Product = product,
+                    ProductImages = productImages,
                     Comments = _comment.GetCommentsById(id),
                     Likes = _context.Likes.Where(x => x.ProductId == id).Count(),
                     Dislikes = _context.Dislikes.Where(x => x.ProductId == id).Count(),
@@ -179,7 +189,37 @@ namespace GeekStore.Controllers
         [HttpPost]
         public IActionResult Search(SearchViewModel model)
         {
-            return View(_context.Products.Where(x => x.Name.Contains(model.Name)));
+            
+            var res = model.Name.Split(' ');
+            foreach(var el in _context.Categories)
+            {
+                if(el.Name.ToLower().Contains(model.Name.ToLower()))
+                {
+                    return RedirectToAction("Category", "Product", new { id = el.Id });
+                }
+                if (el.Name.ToLower().Contains(res[0].ToLower()))
+                {
+                    var sub = _subcategory.GetSubcategoriesByCategoryId(el.Id);
+                    var sid=sub.FirstOrDefault(x => x.Name.ToLower() == res[1].ToLower()).Id;
+                    if(sub != null)
+                    {
+                        return RedirectToAction("CategoryProducts", "Product", new { id = sid });
+                    }
+                }
+            }
+            List<CategoryViewModel> categories = new List<CategoryViewModel>();
+            foreach (var item in _category.Categories)
+            {
+                categories.Add(new CategoryViewModel()
+                {
+                    Category = item,
+                    Subcategories = _subcategory.Subcategories.Where(x => x.CategoryId == item.Id)
+                });
+            }
+            return View(new SearchViewModel() {
+                Products = _context.Products.Where(x => x.Name.Contains(model.Name)),
+                Categories = categories
+            });
         }
         [Route("Product/CategoryProducts/{id}")]
         public ViewResult CategoryProducts(int id)
@@ -194,11 +234,15 @@ namespace GeekStore.Controllers
                 });
 
             }
-
+            var pr = _product.GetProductsBySubcategory(id);
+            foreach (var el in pr)
+            {
+                el.Image = Path.Combine("/Image", el.Image);
+            }
             return View(
-                new CategoriesViewModel()
+                new SearchViewModel()
                 {
-                    Products = _product.GetProductsBySubcategory(id),
+                    Products = pr,
                     Categories = categories
                 });
         }
@@ -223,7 +267,11 @@ namespace GeekStore.Controllers
                 });
 
             }
-            return View(new CategoriesViewModel()
+            foreach (var el in products)
+            {
+                el.Image=Path.Combine("/Image", el.Image);
+            }
+            return View(new SearchViewModel()
             {
                 Products = products,
                 Categories = categories
@@ -241,8 +289,8 @@ namespace GeekStore.Controllers
 
             return RedirectToAction("AllDone", "Home");
         }
-        [Authorize]
         [Route("Product/AddToCart/{id}")]
+        [Authorize]
         public IActionResult AddToCart(int id)
         {
             var info = HttpContext.Session.GetString("SessionUserData");
@@ -258,7 +306,7 @@ namespace GeekStore.Controllers
                 _cart.AddProductToCart(cart.Id, id);
                 return RedirectToAction("AllDone", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
 
         }
         [Authorize]
@@ -325,7 +373,12 @@ namespace GeekStore.Controllers
                 var pc = _cart.ProductCarts.Where(x => x.CartId == cart.Id);
                 foreach (var el in pc)
                 {
+                    
                     products.Add(_product.Products.FirstOrDefault(x => x.Id == el.ProductId));
+                }
+                foreach (var el in products)
+                {
+                    el.Image = Path.Combine("/Image", el.Image);
                 }
 
                 return View(new CartViewModel()

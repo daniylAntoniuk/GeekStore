@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GeekStore.Data.EFContext;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace GeekStore
 {
@@ -109,8 +111,14 @@ namespace GeekStore
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseAuthentication();
-      
-            
+
+            string fileDestDir = env.ContentRootPath;
+            fileDestDir = Path.Combine(fileDestDir, "Uploaded");
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(fileDestDir),
+                RequestPath = new PathString("/Image")
+            });
 
             app.UseSession(
                 );

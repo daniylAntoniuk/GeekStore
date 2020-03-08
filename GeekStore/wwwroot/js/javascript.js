@@ -21,6 +21,16 @@ $(function(){
             $(this).addClass("card-small");
         });
     });
+
+
+    $(".open-pr-btn").click(function () {
+        $("body").css("overflow", "hidden");
+        $(this).parent().find(".order").css("width", "80%");
+    });
+    $(".cls-pr").click(function () {
+        $("body").css("overflow", "visible");
+        $(this).parent().css("width", "0px");
+    });
     //$(".img").mouseenter(function () {
 
     //    $(this).stop().animate({ 'width': +this.width + 20 + "px", 'height': +this.height + 20 + "px" }, 500);

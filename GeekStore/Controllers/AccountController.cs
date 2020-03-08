@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 
@@ -13,6 +14,7 @@ using GeekStore.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -25,14 +27,38 @@ namespace GeekStore.Controllers
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly DBContext _context;
-       
-        public AccountController( UserManager<DbUser> userManager, SignInManager<DbUser> signInManager,
+        private readonly IHostingEnvironment _environment;
+        public AccountController(IHostingEnvironment environment, UserManager<DbUser> userManager, SignInManager<DbUser> signInManager,
         DBContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _environment = environment;
             //_emailSender = emailSender;
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddProfilePhoto(IFormFile uploadedFile)
+        {
+            var info = HttpContext.Session.GetString("SessionUserData");
+            var res = JsonConvert.DeserializeObject<UserInfo>(info);
+            var file = uploadedFile;
+            var folderServaerPath = _environment.ContentRootPath;
+            var folderName = "Uploaded";
+            var fileName = Guid.NewGuid().ToString() + ".jpg";
+            var saveFile = Path.Combine(folderServaerPath, folderName, fileName);
+            using (var stream = System.IO.File.Create(saveFile))
+            {
+                await uploadedFile.CopyToAsync(stream);
+
+            }
+
+            _context.UserProfiles.FirstOrDefault(x => x.Id == res.UserId).Image = fileName;
+            
+            _context.SaveChanges();
+
+            return RedirectToAction("Profile", "Account");
         }
         [HttpGet]
         [Route("Account/ChangePassword/{id}")]
@@ -73,12 +99,21 @@ namespace GeekStore.Controllers
             EmailSender sender = new EmailSender();
             string url = "https://localhost:44349/Account/ChangePassword/" + user.Id;
             sender.SendEmail(model.Email, 
-                $"<head><link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'></head>" +
+               
+     
                 $"<h1>dear {user.UserName},<br/>from geekstore <h1/>" +
                 $"if you don`t want to change password, ignore this message, else press button" +
-                //$"<script src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous'></script>"+
-                //$"<script src = 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity = 'sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin = 'anonymous' ></ script > "+
-                $"<a href='{url}'><button  class='btn btn-primary'>press<button></a>"
+                $"<button href=\"{url}\"" +
+                "style=\"float: right;"+
+                "margin-top:10%;"+
+                "border: none;"+
+                "border-radius: 1.5rem;"+
+                "padding: 2%;"+
+                "background: #0062cc;"+
+                "color: #fff;"+
+                "font-weight: 600;"+
+                "width: 50%;"+
+                "cursor: pointer; \">Change<button>"
                 );
             return RedirectToAction("Index", "Home");
             //ModelState.AddModelError("", "Input email");
@@ -177,13 +212,19 @@ namespace GeekStore.Controllers
 
             if (!ModelState.IsValid)
             {
-
+                model = new LoginViewModel()
+                {
+                    EnternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                };
                 return View(model);
             }
             var user = _context.Users.FirstOrDefault(x => x.Email == model.Email);
             if (user == null)
             {
-
+                model = new LoginViewModel()
+                {
+                    EnternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                };
                 ModelState.AddModelError("", "Not correct email");
                 return View(model);
             }
@@ -191,6 +232,10 @@ namespace GeekStore.Controllers
                 .PasswordSignInAsync(user, model.Password, false, false).Result;
             if (!res.Succeeded)
             {
+                model = new LoginViewModel()
+                {
+                    EnternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                };
                 ModelState.AddModelError("", "Not correct password");
 
                 return View(model);

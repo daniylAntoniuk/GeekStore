@@ -22,5 +22,10 @@ namespace GeekStore.Data.Repositories
                 return _context.Subcategories;
             }
         }
+
+        public List<Subcategory> GetSubcategoriesByCategoryId(int id)
+        {
+            return _context.Subcategories.Where(x => x.CategoryId == id).ToList();
+        }
     }
 }

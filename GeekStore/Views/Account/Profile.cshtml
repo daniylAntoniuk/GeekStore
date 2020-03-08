@@ -17,10 +17,14 @@
                 }
                 else
                 {
-                    <img src="~/img/@Model.UserProfile.Image" class="avatar img-circle img-thumbnail" style="border-radius:50%;" alt="avatar">
+                    <img src="@await Component.InvokeAsync("UserPhoto")" class="avatar img-circle img-thumbnail" style="border-radius:50%;" alt="avatar">
                 }
                     <h6>Upload a different photo...</h6>
-                    <input type="file" class="text-center center-block file-upload">
+                <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="AddProfilePhoto">
+                    <input name="uploadedFile" type="file" class=" text-center  center-block file-upload">
+                    <button class="btn btn-primary mt-3" type="submit">Change photo</button>
+
+                </form>
                 </div></hr><br>
 
 

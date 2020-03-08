@@ -109,7 +109,7 @@
                             <div class="carousel-inner">
                                 @{
 
-                                    for (int i = 0; i < Model.products.Count; i++)
+                                    for (int i = 0; i < Model.products.Count-1; i++)
                                     {
                                         if (i == 0)
                                         {
@@ -124,7 +124,7 @@
                                                 <div class="card col-lg-3 col-sm-4">
                                                     <span class="badge badge-secondary badge-danger">@pr.Discount %</span>
                                                     <div>
-                                                        <a asp-controller="Account" asp-action="Login" asp-route-id="@pr.Id" style="text-decoration: inherit;color:inherit; position: inherit;">
+                                                        <a asp-controller="Product" asp-action="AddToCart" asp-route-id="@pr.Id" style="text-decoration: inherit;color:inherit; position: inherit;">
                                                             <div class="box7">
                                                                 <img src="/img/@pr.Image" class="card-img-top img" />
                                                                 <div class="box-content">
@@ -157,16 +157,27 @@
                                     <div class="carousel-item " data-interval="10000">
                                         <div class="row sl">
                                             @{
-                                                        for (int t = i; t < i + 3; t++)
-                                                        {
-                                                            List<Product> prod = Model.products;
-                                                            Product pr = prod.ElementAt(t);
+                                                //dalshe govnokod
+                                                for (int t = i; t < i + 3; t++)
+                                                {
+                                                    List<Product> prod = Model.products;
+                                                    Product pr = new Product();
+
+                                                    try
+                                                    {
+                                                        pr = prod.ElementAt(t);
+                                                    }
+                                                    catch
+                                                    {
+                                                        break;
+                                                    }
+                                                    
 
 
                                                 <div class="card col-lg-3 col-sm-4">
                                                     <span class="badge badge-secondary badge-danger">@pr.Discount %</span>
                                                     <div>
-                                                        <a asp-controller="Account" asp-action="Login" asp-route-id="@pr.Id" style="text-decoration: inherit;color:inherit; position: inherit;">
+                                                        <a asp-controller="Product" asp-action="AddToCart" asp-route-id="@pr.Id" style="text-decoration: inherit;color:inherit; position: inherit;">
                                                             <div class="box7">
                                                                 <img src="/img/@pr.Image" class="card-img-top img" />
                                                                 <div class="box-content">

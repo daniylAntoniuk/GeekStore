@@ -2,11 +2,30 @@
 @{
     ViewData["Title"] = "Search";
 }
+<div class="flex-row con">
 
-    <div class="container con">
+    <div class="bar" id="bar">
+        <ul class="side-bar">
+            @{
+                foreach (CategoryViewModel category in Model.Categories)
+                {
+                    @await Html.PartialAsync("SideBar", category);
+                }
+            }
+            <hr />
+            <div class="ml-2">
+                <p class="text-muted" style="font-size:18px;">Call-centre</p>
+                <p>+38 044 537-02-22<br />+38 044 537-02-22</p>
+            </div>
+        </ul>
+
+    </div>
+    
+    <div class="container">
+        @await Component.InvokeAsync("Search")
         <div class="row">
             @{
-                foreach (var pr in Model)
+                foreach (var pr in Model.Products)
                 {
 
                     <div class="card col-lg-2 col-sm-4">
@@ -37,4 +56,5 @@
                 }
             }
         </div>
+    </div>
     </div>
