@@ -218,6 +218,15 @@ namespace GeekStore.Controllers
                 };
                 return View(model);
             }
+            if (model.Captcha != "Success")
+            {
+                model = new LoginViewModel()
+                {
+                    EnternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                };
+                ModelState.AddModelError("", "Input captcha !");
+                return View(model);
+            }
             var user = _context.Users.FirstOrDefault(x => x.Email == model.Email);
             if (user == null)
             {
