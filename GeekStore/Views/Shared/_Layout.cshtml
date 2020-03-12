@@ -35,29 +35,29 @@
 
             @*await Component.InvokeAsync("Search");*@
             @*<div class="dropdown">
-            <button style="background-color:#f1f1f1!important; border:0px; color:black;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Login
-            </button>
-            <div class="dropdown-menu">
-                <form class="px-4 py-3" method="post" asp-controller="Account" asp-action="Login">
-                    <div class="form-group">
-                    <label for="exampleDropdownFormEmail1">Email address</label>
-                    <input type="email" asp-for="Email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
-                </div>
-                <div class="form-group">
-                    <label for="exampleDropdownFormPassword1">Password</label>
-                    <input type="password" asp-for="Password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
-                </div>
-                    <div class="form-group">
+                    <button style="background-color:#f1f1f1!important; border:0px; color:black;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </button>
+                    <div class="dropdown-menu">
+                        <form class="px-4 py-3" method="post" asp-controller="Account" asp-action="Login">
+                            <div class="form-group">
+                            <label for="exampleDropdownFormEmail1">Email address</label>
+                            <input type="email" asp-for="Email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleDropdownFormPassword1">Password</label>
+                            <input type="password" asp-for="Password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+                        </div>
+                            <div class="form-group">
+
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign in</button>
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Account" asp-action="Register">New around here? Sign up</a>
 
                     </div>
-                    <button type="submit" class="btn btn-primary">Sign in</button>
-                </form>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" asp-controller="Account" asp-action="Register">New around here? Sign up</a>
-
-            </div>
-        </div>*@
+                </div>*@
 
             @{ var res = await Component.InvokeAsync("User");
 
@@ -88,11 +88,11 @@
                             </div>
                         </div>
 
-                        
+
                         <a asp-controller="Account" asp-action="Profile">
                             <img src="@await Component.InvokeAsync("UserPhoto")" style="border-radius:50%; height:40px; width:40px; margin:0px 5px 0px 5px " />
                         </a>
-                        
+
                         <form asp-controller="Account" asp-action="Logout">
                             <button type="submit" class="btn btn-danger">
                                 Sign out
@@ -159,6 +159,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://kit.fontawesome.com/279e8c03ce.js"></script>
     <script src="~/js/jquery-2.2.4.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.mask.min.js" asp-append-version="true"></script>
     <script src="~/js/javascript.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
